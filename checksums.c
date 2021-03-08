@@ -2,7 +2,7 @@
 
 /* Function implementations */
 
-void gen_checksum_invsum(char *input_string, uint32_t input_size,
+char calculate_checksum_invsum(char *input_string, uint32_t input_size,
 		uint32_t num_checksum_bytes)
 {
 	char sum = 0;
@@ -16,8 +16,21 @@ void gen_checksum_invsum(char *input_string, uint32_t input_size,
 //	printf("Sum before inv: %d\n", sum);
 	sum = ~sum;
 //	printf("Sum after inv: %d\n", sum);
-
-	input_string[input_size - 1] = sum;
+	
+	return sum;
 }
 
+void gen_checksum_invsum(char *input_string, uint32_t input_size,
+		uint32_t num_checksum_bytes)
+{
+	char checksum = calculate_checksum_invsum(input_string, input_size, num_checksum_bytes);
+	input_string[input_size - 1] = checksum;
+}
 
+bool checksum_correct(char *input_string, uint32_t input_size,
+		uint32_t num_checksum_bytes)
+{
+	char checksum = calculate_checksum_invsum(input_string, input_size, num_checksum_bytes);
+
+	return checksum == input_string[input_size - 1];
+}
