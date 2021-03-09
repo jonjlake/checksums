@@ -20,7 +20,7 @@ char calculate_checksum_invsum(char *input_string, uint32_t input_size,
 	return sum;
 }
 
-void gen_checksum_invsum(char *input_string, uint32_t input_size,
+void insert_checksum_invsum(char *input_string, uint32_t input_size,
 		uint32_t num_checksum_bytes)
 {
 	char checksum = calculate_checksum_invsum(input_string, input_size, num_checksum_bytes);
@@ -34,3 +34,4 @@ bool checksum_correct(char *input_string, uint32_t input_size,
 
 	return checksum == input_string[input_size - 1];
 }
+
