@@ -13,6 +13,7 @@ JON_TEST_ERR test_insert_checksum_invsum_correct(void);
 JON_TEST_ERR test_insert_checksum_invsum_incorrect(void);
 JON_TEST_ERR test_checksum_correct_cs_correct(void);
 JON_TEST_ERR test_checksum_correct_cs_incorrect(void);
+JON_TEST_ERR test_calculate_checksum_invsum_1(void);
 
 #define FG_TEST_STRING "Hello, checksum!"
 #define FG_TEST_STRING_CHECKSUM 75
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
 
 	add_test(test_checksum_correct_cs_correct, "Correct embedded inverse checksum");
 	add_test(test_checksum_correct_cs_incorrect, "Incorrect embedded inverse checksum");
-
+	add_test(test_calculate_checksum_invsum_1, "Calculate inverse checksum");
 	run_all_tests();
 
 	delete_test_suite();
@@ -139,4 +140,23 @@ JON_TEST_ERR test_checksum_correct_cs_incorrect(void)
 			num_checksum_bytes);
 
 	return retval ? JON_TEST_ERR_ERR : JON_TEST_ERR_NO_ERR;
+}
+
+/*JON_TEST_ERR test_calculate_checksum_invsum(char *input_string, 
+		uint32_t input_size, uint32_t num_checksum_bytes)
+{
+}*/
+
+JON_TEST_ERR test_calculate_checksum_invsum_1(void)
+{
+	char *input_string = FG_TEST_STRING;
+	uint32_t input_size = strlen(input_string) + 1;
+	uint32_t num_checksum_bytes = 1;
+	char checksum_exp = FG_TEST_STRING_CHECKSUM;
+
+	char checksum_calc = calculate_checksum_invsum(input_string,
+			input_size, num_checksum_bytes);
+
+	return checksum_calc == checksum_exp ? JON_TEST_ERR_NO_ERR : 
+		JON_TEST_ERR_ERR;
 }
