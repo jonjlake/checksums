@@ -11,9 +11,13 @@ JON_TEST_ERR test_insert_checksum_invsum(char *input_string, uint32_t input_size
 		uint32_t num_checksum_bytes, char checksum_exp);
 JON_TEST_ERR test_insert_checksum_invsum_correct(void);
 JON_TEST_ERR test_insert_checksum_invsum_incorrect(void);
+JON_TEST_ERR test_checksum_correct_cs_correct(void);
+JON_TEST_ERR test_checksum_correct_cs_incorrect(void);
 
 #define FG_TEST_STRING "Hello, checksum!"
 #define FG_TEST_STRING_CHECKSUM 75
+#define FG_TEST_STRING_WITH_CHECKSUM "Hello, checksum!K"
+#define FG_TEST_STRING_WITH_CHECKSUM_INC "Hello, checksum!L"
 
 /* 
  * FG_TEST_STRING_CHECKSUM calculation:
@@ -47,6 +51,9 @@ int main(int argc, char *argv[])
 	add_test(test_insert_checksum_invsum_correct, "Correct inverse checksum insertion");
 	add_test(test_insert_checksum_invsum_incorrect, "Incorrect inverse checksum insertion");
 
+	add_test(test_checksum_correct_cs_correct, "Correct embedded inverse checksum");
+	add_test(test_checksum_correct_cs_incorrect, "Incorrect embedded inverse checksum");
+
 	run_all_tests();
 
 	delete_test_suite();
@@ -55,6 +62,7 @@ int main(int argc, char *argv[])
 
 /* Function implementations */
 
+/* Main test function for "insert_checksum_invsum" function */
 JON_TEST_ERR test_insert_checksum_invsum(char *input_string, uint32_t input_size,
 		uint32_t num_checksum_bytes, char checksum_exp)
 {
@@ -102,3 +110,33 @@ JON_TEST_ERR test_insert_checksum_invsum_incorrect(void)
 	return JON_TEST_ERR_ERR == ret_err ? JON_TEST_ERR_NO_ERR : JON_TEST_ERR_ERR;
 }
 
+/* Main test function for "checksum_correct" function */
+/*JON_TEST_ERR test_checksum_correct(char *input_string, uint32_t input_size,
+		uint32_t num_checksum_bytes)
+{
+	
+}*/
+
+JON_TEST_ERR test_checksum_correct_cs_correct(void)
+{
+	char *input_string = FG_TEST_STRING_WITH_CHECKSUM;
+	uint32_t input_size = strlen(input_string);
+	uint32_t num_checksum_bytes = 1;
+
+	bool retval = checksum_correct(input_string, input_size, 
+			num_checksum_bytes);
+
+	return retval ? JON_TEST_ERR_NO_ERR : JON_TEST_ERR_ERR;
+}
+
+JON_TEST_ERR test_checksum_correct_cs_incorrect(void)
+{
+	char *input_string = FG_TEST_STRING_WITH_CHECKSUM_INC;
+	uint32_t input_size = strlen(input_string);
+	uint32_t num_checksum_bytes = 1;
+
+	bool retval = checksum_correct(input_string, input_size, 
+			num_checksum_bytes);
+
+	return retval ? JON_TEST_ERR_ERR : JON_TEST_ERR_NO_ERR;
+}
