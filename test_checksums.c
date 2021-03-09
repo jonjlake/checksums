@@ -1,26 +1,12 @@
 #include "checksums.h"
+#include "../unit_test_fw/unit_test_fw.h"
 
 /* Std includes */
 #include <stdio.h>
 #include <stdbool.h>
 
-/* Error return enum */
-typedef enum JON_TEST_ERR
-{
-	JON_TEST_ERR_NO_ERR,
-	JON_TEST_ERR_ERR,
-} JON_TEST_ERR;
-
-typedef struct test_results
-{
-	uint32_t num_succeeded;
-	uint32_t num_failed;
-	uint32_t num_unknown;
-} test_results;
 
 /* Functions */
-void run_all_tests(void);
-void run_test(JON_TEST_ERR (*test_fxn)(void), char *test_name);
 JON_TEST_ERR test_gen_checksum_invsum(char *input_string, uint32_t input_size,
 		uint32_t num_checksum_bytes, char checksum_exp);
 JON_TEST_ERR test_gen_checksum_invsum_correct(void);
@@ -30,39 +16,21 @@ JON_TEST_ERR test_gen_checksum_invsum_incorrect(void);
 int main(int argc, char *argv[])
 {
 	/* Print results here, or create results struct/print? */
+	//run_all_tests();
+	init_test_suite("Checksum tests");
+	
+	add_test(test_gen_checksum_invsum_correct, "Correct inverse checksum");
+	add_test(test_gen_checksum_invsum_incorrect, "Incorrect inverse checksum");
+
 	run_all_tests();
 
+	delete_test_suite();
 	return 0;
 }
 
 /* Function implementations */
 
-void run_all_tests(void)
-{
-	run_test(test_gen_checksum_invsum_correct, "Correct inverse checksum");
-	run_test(test_gen_checksum_invsum_incorrect, "Incorrect inverse checksum");
-}
 
-// Add a return here indicating if any failed, or were unrecognized
-void run_test(JON_TEST_ERR (*test_fxn)(void), char *test_name)
-{
-	JON_TEST_ERR ret_err;
-
-	ret_err = test_fxn();
-
-	switch (ret_err)
-	{
-		case JON_TEST_ERR_NO_ERR:
-			printf("Test: %s SUCCEEDED\n", test_name);
-			break;
-		case JON_TEST_ERR_ERR:
-			printf("Test: %s FAILED\n", test_name);
-			break;
-		default:
-			printf("Test: %s RESULT UNRECOGNIZED\n", test_name);
-			break;
-	}
-}
 
 JON_TEST_ERR test_gen_checksum_invsum(char *input_string, uint32_t input_size,
 		uint32_t num_checksum_bytes, char checksum_exp)
